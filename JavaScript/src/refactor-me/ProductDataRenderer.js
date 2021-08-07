@@ -4,12 +4,12 @@ ProductDataRenderer.prototype.render = function () {
 	var items = ProductDataConsolidator.get();
 	var itemsInEuros = ProductDataConsolidator.getInEuros();
 	var itemsInUSDollar = ProductDataConsolidator.getInUSDollars();
-	document.getElementById("nzdProducts").innerHTML = ProductDataRenderer.generateHtml(items);
-	document.getElementById("euProducts").innerHTML = ProductDataRenderer.generateHtml(itemsInEuros);
-	document.getElementById("usdProducts").innerHTML = ProductDataRenderer.generateHtml(itemsInUSDollar);
+	document.getElementById("nzdProducts").innerHTML = ProductDataRenderer.generateHtml('NZD', items);
+	document.getElementById("euProducts").innerHTML = ProductDataRenderer.generateHtml('USD', itemsInEuros);
+	document.getElementById("usdProducts").innerHTML = ProductDataRenderer.generateHtml('Euro', itemsInUSDollar);
 }
 
-ProductDataRenderer.generateHtml = function (itemList) {
+ProductDataRenderer.generateHtml = function (currency, itemList) {
 	let data = '';
 	itemList.forEach(item => {
 		data += `<tr>
@@ -19,9 +19,9 @@ ProductDataRenderer.generateHtml = function (itemList) {
 		</tr>`;
 	});
 
-	let html = `<table class="table table-striped">
+	let html = `<table class="table table-striped table-dark">
 		<thead>
-			<tr><td colspan="3">Products (NZD)</td></tr>
+			<tr><td colspan="3">Products (${currency})</td></tr>
 			<tr>
 				<td>Name</td>
 				<td>Price</td>
