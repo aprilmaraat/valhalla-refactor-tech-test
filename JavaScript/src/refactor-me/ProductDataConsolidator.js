@@ -1,112 +1,47 @@
 ﻿function ProductDataConsolidator() { }
 
 ProductDataConsolidator.get = function () {
-	var l = new LawnmowerRepository().getAll();
-	var p = new PhoneCaseRepository().getAll();
-	var t = new TShirtRepository().getAll();
-
-	var products = [];
-
-	for (var i = 0; i < l.length; i++) {
-		products.push({
-			id: l[i].id,
-			name: l[i].name,
-			price: l[i].price.toFixed(2),
-			type: "Lawnmower"
-		});
-	}
-
-	for (var i = 0; i < p.length; i++) {
-		products.push({
-			id: p[i].id,
-			name: p[i].name,
-			price: p[i].price.toFixed(2),
-			type: "Phone Case"
-		});
-	}
-
-	for (var i = 0; i < t.length; i++) {
-		products.push({
-			id: t[i].id,
-			name: t[i].name,
-			price: t[i].price.toFixed(2),
-			type: "T-Shirt"
-		});
-	}
-
-	return products;
+	return ProductDataConsolidator.generateProductList();
 }
 
 ProductDataConsolidator.getInUSDollars = function () {
-	var l = new LawnmowerRepository().getAll();
-	var p = new PhoneCaseRepository().getAll();
-	var t = new TShirtRepository().getAll();
-
-	var products = [];
-
-	for (var i = 0; i < l.length; i++) {
-		products.push({
-			id: l[i].id,
-			name: l[i].name,
-			price: (l[i].price * 0.76).toFixed(2),
-			type: "Lawnmower"
-		});
-	}
-
-	for (var i = 0; i < p.length; i++) {
-		products.push({
-			id: p[i].id,
-			name: p[i].name,
-			price: (p[i].price * 0.76).toFixed(2),
-			type: "Phone Case"
-		});
-	}
-
-	for (var i = 0; i < t.length; i++) {
-		products.push({
-			id: t[i].id,
-			name: t[i].name,
-			price: (t[i].price * 0.76).toFixed(2),
-			type: "T-Shirt"
-		});
-	}
-
-	return products;
+	return ProductDataConsolidator.generateProductList(0.76);
 }
 
 ProductDataConsolidator.getInEuros = function () {
-	var l = new LawnmowerRepository().getAll();
-	var p = new PhoneCaseRepository().getAll();
-	var t = new TShirtRepository().getAll();
+	return ProductDataConsolidator.generateProductList(0.67);
+}
 
-	var products = [];
+ProductDataConsolidator.generateProductList = function (currencyMultiplier = 1) {
+	let lawnmowers = new LawnmowerRepository().getAll();
+	let phoneCases = new PhoneCaseRepository().getAll();
+	let tShirts = new TShirtRepository().getAll();
+	let products = [];
 
-	for (var i = 0; i < l.length; i++) {
+	lawnmowers.forEach(item => {
 		products.push({
-			id: l[i].id,
-			name: l[i].name,
-			price: (l[i].price * 0.67).toFixed(2),
+			id: item.id,
+			name: item.name,
+			price: item.price * currencyMultiplier,
 			type: "Lawnmower"
 		});
-	}
-
-	for (var i = 0; i < p.length; i++) {
+	});
+	phoneCases.forEach(item => {
 		products.push({
-			id: p[i].id,
-			name: p[i].name,
-			price: (p[i].price * 0.67).toFixed(2),
+			id: item.id,
+			name: item.name,
+			price: item.price * currencyMultiplier,
 			type: "Phone Case"
 		});
-	}
-
-	for (var i = 0; i < t.length; i++) {
+	});
+	tShirts.forEach(item => {
 		products.push({
-			id: t[i].id,
-			name: t[i].name,
-			price: (t[i].price * 0.67).toFixed(2),
+			id: item.id,
+			name: item.name,
+			price: item.price * currencyMultiplier,
 			type: "T-Shirt"
 		});
-	}
+	});
 
 	return products;
 }
