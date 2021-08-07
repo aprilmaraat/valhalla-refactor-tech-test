@@ -43,38 +43,45 @@ namespace RefactorMe
         /// <returns>List of <see cref="Product"/></returns>
         private static List<Product> GenerateProductList(double currencyMultiplier = 1)
         {
-            IQueryable<Lawnmower> lawnmowers = new LawnmowerRepository().GetAll();
-            IQueryable<PhoneCase> phoneCases = new PhoneCaseRepository().GetAll();
-            IQueryable<TShirt> tShirts = new TShirtRepository().GetAll();
+            try
+            {
+                IQueryable<Lawnmower> lawnmowers = new LawnmowerRepository().GetAll();
+                IQueryable<PhoneCase> phoneCases = new PhoneCaseRepository().GetAll();
+                IQueryable<TShirt> tShirts = new TShirtRepository().GetAll();
 
-            var products = new List<Product>();
-            products.AddRange(
-                lawnmowers.Select(x => new Product
-                {
-                    Id = x.Id,
-                    Name = x.Name,
-                    Price = x.Price * currencyMultiplier,
-                    Type = EnumItemType.Lawnmower.ToString()
-                })
-                .Concat(
-                    phoneCases.Select(x => new Product
+                var products = new List<Product>();
+                products.AddRange(
+                    lawnmowers.Select(x => new Product
                     {
                         Id = x.Id,
                         Name = x.Name,
                         Price = x.Price * currencyMultiplier,
-                        Type = EnumItemType.PhoneCase.ToString()
+                        Type = EnumItemType.Lawnmower.ToString()
                     })
-                ).Concat(
-                    tShirts.Select(x => new Product
-                    {
-                        Id = x.Id,
-                        Name = x.Name,
-                        Price = x.Price * currencyMultiplier,
-                        Type = EnumItemType.TShirt.ToString()
-                    })
-                ));
+                    .Concat(
+                        phoneCases.Select(x => new Product
+                        {
+                            Id = x.Id,
+                            Name = x.Name,
+                            Price = x.Price * currencyMultiplier,
+                            Type = EnumItemType.PhoneCase.ToString()
+                        })
+                    ).Concat(
+                        tShirts.Select(x => new Product
+                        {
+                            Id = x.Id,
+                            Name = x.Name,
+                            Price = x.Price * currencyMultiplier,
+                            Type = EnumItemType.TShirt.ToString()
+                        })
+                    ));
 
-            return products;
+                return products;
+            }
+            catch (Exception ex) 
+            {
+                throw ex;
+            }
         }
     }
 }
