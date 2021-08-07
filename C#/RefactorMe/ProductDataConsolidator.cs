@@ -5,122 +5,76 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using RefactorMe.Enum;
 
 namespace RefactorMe
 {
     public class ProductDataConsolidator
     {
+        /// <summary>
+        /// Get list of products with unconverted price currency
+        /// </summary>
+        /// <returns>List of <see cref="Product"/></returns>
         public static List<Product> Get() {
-            var l = new LawnmowerRepository().GetAll();
-            var p = new PhoneCaseRepository().GetAll();
-            var t = new TShirtRepository().GetAll();
-
-            var ps = new List<Product>();
-
-            foreach (var i in l) {
-                ps.Add(new Product() {
-                    Id = i.Id,
-                    Name = i.Name,
-                    Price = i.Price,
-                    Type = "Lawnmower"
-                });
-            }
-
-            foreach (var i in p) {
-                ps.Add(new Product() {
-                    Id = i.Id,
-                    Name = i.Name,
-                    Price = i.Price,
-                    Type = "Phone Case"
-                });
-            }
-
-            foreach (var i in t) {
-                ps.Add(new Product() {
-                    Id = i.Id,
-                    Name = i.Name,
-                    Price = i.Price,
-                    Type = "T-Shirt"
-                });
-            }
-
-            return ps;
+            return GenerateProductList();
         }
 
-        public static List<Product> GetInUSDollars() {
-            var l = new LawnmowerRepository().GetAll();
-            var p = new PhoneCaseRepository().GetAll();
-            var t = new TShirtRepository().GetAll();
-
-            var ps = new List<Product>();
-
-            foreach (var i in l) {
-                ps.Add(new Product() {
-                    Id = i.Id,
-                    Name = i.Name,
-                    Price = i.Price * 0.76,
-                    Type = "Lawnmower"
-                });
-            }
-
-            foreach (var i in p) {
-                ps.Add(new Product() {
-                    Id = i.Id,
-                    Name = i.Name,
-                    Price = i.Price * 0.76,
-                    Type = "Phone Case"
-                });
-            }
-
-            foreach (var i in t) {
-                ps.Add(new Product() {
-                    Id = i.Id,
-                    Name = i.Name,
-                    Price = i.Price * 0.76,
-                    Type = "T-Shirt"
-                });
-            }
-
-            return ps;
-        }
-
+        /// <summary>
+        /// Get list of products with converted price currency to Euro
+        /// </summary>
+        /// <returns>List of <see cref="Product"/></returns>
         public static List<Product> GetInEuros() {
-            var l = new LawnmowerRepository().GetAll();
-            var p = new PhoneCaseRepository().GetAll();
-            var t = new TShirtRepository().GetAll();
-
-            var ps = new List<Product>();
-
-            foreach (var i in l) {
-                ps.Add(new Product() {
-                    Id = i.Id,
-                    Name = i.Name,
-                    Price = i.Price * 0.67,
-                    Type = "Lawnmower"
-                });
-            }
-
-            foreach (var i in p) {
-                ps.Add(new Product() {
-                    Id = i.Id,
-                    Name = i.Name,
-                    Price = i.Price * 0.67,
-                    Type = "Phone Case"
-                });
-            }
-
-            foreach (var i in t) {
-                ps.Add(new Product() {
-                    Id = i.Id,
-                    Name = i.Name,
-                    Price = i.Price * 0.67,
-                    Type = "T-Shirt"
-                });
-            }
-
-            return ps;
+            return GenerateProductList(0.67);
         }
- 
- 
+
+        /// <summary>
+        /// Get list of products with converted price currency to Dollar
+        /// </summary>
+        /// <returns>List of <see cref="Product"/></returns>
+        public static List<Product> GetInUSDollars()
+        {
+            return GenerateProductList(0.76);
+        }
+
+        /// <summary>
+        /// Generates a list of products from multiple repository data
+        /// </summary>
+        /// <param name="currencyMultiplier">Currency multiplier: Price is multiplied with the paramater, if not provided defaults to 1</param>
+        /// <returns>List of <see cref="Product"/></returns>
+        private static List<Product> GenerateProductList(double currencyMultiplier = 1)
+        {
+            IQueryable<Lawnmower> lawnmowers = new LawnmowerRepository().GetAll();
+            IQueryable<PhoneCase> phoneCases = new PhoneCaseRepository().GetAll();
+            IQueryable<TShirt> tShirts = new TShirtRepository().GetAll();
+
+            var products = new List<Product>();
+            products.AddRange(
+                lawnmowers.Select(x => new Product
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    Price = x.Price * currencyMultiplier,
+                    Type = EnumItemType.Lawnmower.ToString()
+                })
+                .Concat(
+                    phoneCases.Select(x => new Product
+                    {
+                        Id = x.Id,
+                        Name = x.Name,
+                        Price = x.Price * currencyMultiplier,
+                        Type = EnumItemType.PhoneCase.ToString()
+                    })
+                ).Concat(
+                    tShirts.Select(x => new Product
+                    {
+                        Id = x.Id,
+                        Name = x.Name,
+                        Price = x.Price * currencyMultiplier,
+                        Type = EnumItemType.TShirt.ToString()
+                    })
+                ));
+
+            return products;
+        }
     }
 }
